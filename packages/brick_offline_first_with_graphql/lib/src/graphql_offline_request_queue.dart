@@ -20,6 +20,6 @@ class GraphqlOfflineRequestQueue extends OfflineRequestQueue<Request> {
   @override
   Future<void> transmitRequest(Request request) async {
     logger.finest('Processing request ${request.operation.operationName}');
-    link.request(request);
+    await for (final r in link.request(request));
   }
 }
