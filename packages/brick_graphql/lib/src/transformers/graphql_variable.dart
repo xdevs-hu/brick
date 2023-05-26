@@ -12,16 +12,37 @@ class GraphqlVariable {
   /// Defaults `false`.
   final bool nullable;
 
+  final bool isList;
+  final bool nullableList;
+
   const GraphqlVariable({
     required this.className,
     required this.name,
     this.nullable = false,
+    this.isList = false,
+    this.nullableList = false,
   });
 
   factory GraphqlVariable.fromVariableDefinitionNode(VariableDefinitionNode node) {
+    var currentNode;
+    var isList = false;
+    var nullableList = false;
+
+    if (node.type is ListTypeNode) {
+      final listNode = node.type as ListTypeNode;
+      currentNode = listNode.type as NamedTypeNode;
+
+      isList = true;
+      nullableList = !listNode.isNonNull;
+    } else {
+      currentNode = node.type as NamedTypeNode;
+    }
+
     return GraphqlVariable(
-      className: (node.type as NamedTypeNode).name.value,
+      className: currentNode.name.value,
       name: node.variable.name.value,
+      isList: isList,
+      nullableList: nullableList,
     );
   }
 

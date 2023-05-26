@@ -38,7 +38,13 @@ class ModelFieldsDocumentTransformer<TModel extends GraphqlModel> {
             for (final variable in variables)
               VariableDefinitionNode(
                 variable: VariableNode(name: NameNode(value: variable.name)),
-                type: NamedTypeNode(
+                type: variable.isList ? ListTypeNode(
+                    type: NamedTypeNode(
+                      name: NameNode(value: variable.className),
+                      isNonNull: !variable.nullable,
+                    ),
+                  isNonNull: !variable.nullableList,
+                ): NamedTypeNode(
                   name: NameNode(value: variable.className),
                   isNonNull: !variable.nullable,
                 ),
